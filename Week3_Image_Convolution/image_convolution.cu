@@ -15,11 +15,7 @@
 #define O_TILE_WIDTH 12
 #define BLOCK_WIDTH (O_TILE_WIDTH + 4)
 #define TILE_WIDTH BLOCK_WIDTH
-#define R 0
-#define G 1
-#define B 2
 
-//@@ INSERT CODE HERE
 __device__ float zeroOneClamp(float s) {
     if (s < 0)
         return 0;
@@ -43,7 +39,6 @@ __global__ void imageConvolution(float* input, float* output, const float* __res
     int row_i = row_o - Mask_radius;
     int col_i = col_o - Mask_radius;
     int index_i = (row_i * W + col_i) * Channels + chan;
-
 
     if ((row_i >= 0) && (row_i < H) && (col_i >= 0) && (col_i < W))
         sm_color[chan][ty][tx] = input[index_i];
@@ -122,7 +117,6 @@ int main(int argc, char* argv[]) {
     dim3 dimGrid((imageWidth - 1) / O_TILE_WIDTH + 1, (imageHeight - 1) / O_TILE_WIDTH + 1, Channels);
 
     wbTime_start(Compute, "Doing the computation on the GPU");
-    //@@ INSERT CODE HERE
     imageConvolution << <dimGrid, dimBlock>>> (deviceInputImageData, deviceOutputImageData, deviceMaskData, imageWidth, imageHeight);
     cudaDeviceSynchronize();
     wbTime_stop(Compute, "Doing the computation on the GPU");
